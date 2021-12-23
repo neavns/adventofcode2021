@@ -63,8 +63,9 @@ const checkWin = () => {
 
   // check vertically
   let i = 0
+  const numberOfBoards = formattedBoards.length / 25
   
-  while(i < 3) {
+  while(i < numberOfBoards) {
     const winnerCol = hasWinningColumn(formattedBoards.slice(i * 25, (i + 1) * 25))
     if (winnerCol) {
       console.log('WINNER____', winnerCol)
