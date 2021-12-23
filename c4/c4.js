@@ -28,13 +28,13 @@ const [_test_numbers, ..._test_boards] = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13
  2  0 12  3  7`.split('\n').filter(el => el)
 
  
- let formattedBoards = _test_boards.join(' ').split(' ').filter(n => n !== '')
-const numbersArr = _test_numbers.split(',').map(n => parseInt(n))
- let didWin = false
- let winningBoard = -1
+let formattedBoards = boards.join(' ').split(' ').filter(n => n !== '')
+const numbersArr = numbers.split(',').map(n => parseInt(n))
+let didWin = false
+let winningBoard = -1
 
- let numbersDrawn = []
- 
+let numbersDrawn = []
+
 
 const checkWin = () => {
 
