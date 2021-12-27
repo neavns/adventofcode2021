@@ -28,10 +28,12 @@ const [_test_numbers, ..._test_boards] = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13
  2  0 12  3  7`.split('\n').filter(el => el)
 
  
-let formattedBoards = boards.join(' ').split(' ').filter(n => n !== '')
 const numbersArr = numbers.split(',').map(n => parseInt(n))
-let didWin = false
+let formattedBoards = boards.join(' ').split(' ').filter(n => n !== '')
+const numberOfBoards = formattedBoards.length / 25
 let winningBoard = -1
+let completedBoards = []
+let gameOver = false
 
 const checkWin = () => {
 
@@ -44,14 +46,11 @@ const checkWin = () => {
     winnerRow.push(boardsArr.shift())
 
     if(boardsArr.length % 25 === 0) boardNumber++
-    
+
     if (winnerRow.length === 5) {
-      if(winnerRow.filter(n => n.includes('-')).length === 5) {
-      console.log(formattedBoards)
-        console.log('winnerRow____', winnerRow)
-        didWin = true
+      if(winnerRow.filter(n => n.includes('-')).length === 5 && !completedBoards.includes(boardNumber)) {
         winningBoard = boardNumber
-        return true
+        completedBoards.push(winningBoard)
       }
 
       winnerRow = []
@@ -60,15 +59,12 @@ const checkWin = () => {
 
   // check vertically
   let i = 0
-  const numberOfBoards = formattedBoards.length / 25
   
   while(i < numberOfBoards) {
     const winnerCol = hasWinningColumn(formattedBoards.slice(i * 25, (i + 1) * 25))
-    if (winnerCol) {
-      console.log('WINNER____', winnerCol)
+    if (winnerCol && !completedBoards.includes(i + 1)) {
       winningBoard = i + 1
-      didWin = true
-      return true
+      completedBoards.push(winningBoard)
     }
 
     i++
@@ -91,10 +87,7 @@ const hasWinningColumn = board => {
       pointerTwo += 5
     }
 
-    if (winnerCol.filter(n => n.includes('-')).length === 5) {
-      console.log('winnerCol____', winnerCol)
-      return true
-    }
+    if (winnerCol.filter(n => n.includes('-')).length === 5) return true
 
     pointerOne++
     pointerTwo = pointerOne + 5
@@ -112,26 +105,24 @@ const calculateResult = number => {
   console.log('RESULT____', sum * number)
 }
 
-const drawNumbers = number => {
+const drawNumbers = (number, isLastNumber = false) => {
   formattedBoards = formattedBoards.map(n => parseInt(n) === number ? `${number}-` : n)
 
-  const didWin = checkWin(number)
+  checkWin()
 
-  if(didWin) {
-    console.log('WINNER____', winningBoard)
+  if(completedBoards.length === numberOfBoards || isLastNumber) {
     calculateResult(number)
+    gameOver = true
   }
-
-
 }
 
 const bingo = () => {
-  for (const number of numbersArr) {
-    if (didWin) break
-    drawNumbers(number, formattedBoards)
+  for(let i = 0; i < numbersArr.length; i++) {
+    if(gameOver) break
+    drawNumbers(numbersArr[i], i === numbersArr.length - 1)
   }
 
-  if(!didWin) console.log('NO POSSIBLE SOLUTION!')
+  console.log(completedBoards)
 }
 
 bingo()
